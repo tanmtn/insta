@@ -4,6 +4,7 @@ import App from './App';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ChakraProvider } from '@chakra-ui/react';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -13,7 +14,9 @@ root.render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
             <ReactQueryDevtools initialIsOpen={true} />
-            <App />
+            <ChakraProvider>
+                <App />
+            </ChakraProvider>
         </QueryClientProvider>
     </React.StrictMode>
 );

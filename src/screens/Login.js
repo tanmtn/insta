@@ -1,11 +1,14 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
 
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
-import { styled } from "styled-components";
-import { Helmet } from "react-helmet-async"
-import { Link } from "react-router-dom"
+import { styled } from 'styled-components';
+import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { sessionLogin } from 'api';
+import { userLoggedIn } from 'apollo';
 
 const Container = styled.div`
     display: flex;
@@ -26,15 +29,15 @@ const WhiteBox = styled.div`
 `;
 
 const TopBox = styled(WhiteBox)`
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-padding: 35px 40px 25px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 40px 25px 40px;
 
-form{
-    margin-top: 30px;
-}
+    form {
+        margin-top: 30px;
+    }
 `;
 
 const TopOr = styled.div`
@@ -100,22 +103,41 @@ const Button = styled.button`
 
 function Login() {
     // useState(): 컴포넌트에서 바뀌는 변수 또는 값을 관리해주는 함수
-    const [username, setUserName] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUserName] = useState('');
+    const [password, setPassword] = useState('');
+
+    const userMutation = useMutation(sessionLogin, {
+        onSuccess: (data) => {
+            console.log('onSuccess');
+            console.log('onSuccess data', data);
+            userLoggedIn();
+        },
+        onError: () => {
+            console.log('onError');
+        },
+    });
 
     const onChange = (event) => {
         const { name, value } = event.currentTarget;
         console.log(name, value);
 
-        if (name === "username") {
+        if (name === 'username') {
             setUserName(value);
-        } else if (name === "password") {
+        } else if (name === 'password') {
             setPassword(value);
         }
     };
 
+    // 패스워드가 4개 이상의 문자를 필요로 한다.
     const onSubmit = (event) => {
         event.preventDefault(); // 새로고침 방지
+
+        // if (password.length < 5) {
+        //     alert('비밀번호가 짧습니다.');
+        // }
+
+        // useQuery(GET), useMutation(UPDATE, POST)-> success 여부에 대한 tracking
+        userMutation.mutate({ username, password });
     };
 
     return (
@@ -130,20 +152,8 @@ function Login() {
                     </div>
 
                     <form onSubmit={onSubmit}>
-                        <Input
-                            type="text"
-                            name="username"
-                            placeholder="유저네임"
-                            onChange={onChange}
-                            required
-                        />
-                        <Input
-                            type="password"
-                            name="password"
-                            placeholder="비밀번호"
-                            onChange={onChange}
-                            required
-                        />
+                        <Input type="text" name="username" placeholder="유저네임" onChange={onChange} required />
+                        <Input type="password" name="password" placeholder="비밀번호" onChange={onChange} required />
                         <Button type="submit" value="로그인 하기">
                             로그인
                         </Button>
@@ -179,4 +189,3 @@ export default Login;
 //         <h1>Login Screen</h1>
 //     </div>;
 // };
-

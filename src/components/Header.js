@@ -5,6 +5,10 @@ import { faPaperPlane, faUser } from '@fortawesome/fontawesome-free-regular';
 import { Link } from 'react-router-dom';
 
 import { styled } from 'styled-components';
+import { Button } from '@chakra-ui/react';
+
+import { userLogOut } from 'api';
+import { userLoggedOut } from 'apollo';
 
 const HeaderContainer = styled.header`
     display: flex;
@@ -29,6 +33,14 @@ const SLink = styled(Link)`
 `;
 
 function Header() {
+    const onLogout = async () => {
+        const res = await userLogOut();
+
+        if (res) {
+            userLoggedOut();
+        }
+    };
+
     return (
         <HeaderContainer>
             <Wrapper>
@@ -43,7 +55,7 @@ function Header() {
                     <SLink to="/profile">
                         <FontAwesomeIcon icon={faUser} style={{ marginRight: '5px' }} size="1x" />
                     </SLink>
-                    <button>로그인</button>
+                    <Button onClick={onLogout}>로그아웃</Button>
                 </Column>
             </Wrapper>
         </HeaderContainer>

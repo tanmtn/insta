@@ -12,10 +12,14 @@ import { GlobalStyle, darkTheme, WhiteTheme } from './styles';
 import { ThemeProvider } from 'styled-components';
 import { useState } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
+import { useReactiveVar } from '@apollo/client';
+import { isUserLoggedIn } from 'apollo';
 
 function App() {
-    const [isLogin, setIsLogin] = useState(true);
-    const [darkMode, setDarkMode] = useState(true);
+    // const [isLogin, setIsLogin] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
+
+    const isLogin = useReactiveVar(isUserLoggedIn);
 
     return (
         <HelmetProvider>

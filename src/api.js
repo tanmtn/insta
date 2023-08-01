@@ -1,4 +1,6 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { userLoggedIn } from 'apollo';
 
 const instance = axios.create({
     baseURL: 'http://127.0.0.1:8000/api/v1/',
@@ -25,4 +27,18 @@ export const getUserFeeds = ({ queryKey }) => {
     const [_, username] = queryKey;
 
     return instance.get('feeds/' + username).then((res) => res.data);
+};
+
+export const sessionLogin = ({ username, password }) => {
+    return instance.post('users/login', { username, password }).then((res) => res.data);
+};
+
+export const userLogOut = () => {
+    return instance
+        .post('users/logout', '', {
+            headers: {
+                'X-CSRFToken': Cookies.get('csrftoken'),
+            },
+        })
+        .then((res) => res.data);
 };
